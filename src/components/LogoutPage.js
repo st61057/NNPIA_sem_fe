@@ -7,11 +7,11 @@ function LogoutPage(props){
 
     useEffect(() => {
         AuthService.logout().then(res =>{
-            if(res.data.status === 200){
+            if(res.status === 200){
                 props.setLoggedIn(false);
                 navigate('/');
             }else{
-                console.log(res.data.message());
+                alert(res.message);
             }
         });
     },[]);

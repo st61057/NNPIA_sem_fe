@@ -9,7 +9,7 @@ import {format} from 'date-fns';
 import * as React from "react";
 
 
-function AdministrationReservations() {
+function ManageReservationsPage() {
     const [page, setPage] = useState(0);
     const [maxPage, setMaxPage] = useState(0);
     const [sortType, setSortType] = useState("asc");
@@ -157,4 +157,4 @@ function AdministrationReservations() {
     );
 }
 
-export default AdministrationReservations;
+export default ManageReservationsPage;

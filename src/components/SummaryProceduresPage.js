@@ -3,11 +3,11 @@ import AuthService from "../service/AuthService";
 import {useEffect, useState} from "react";
 import {Link, useNavigate} from 'react-router-dom';
 import * as React from "react";
-import PublicService from "../service/PublicService";
+import ClientReservationService from "../service/ClientReservationService";
 import ProcedureService from "../service/ProcedureService";
 
 
-function AdmProcedures() {
+function SummaryProceduresPage() {
     const [messageTxt, setMessage] = useState("");
     const navigate = useNavigate();
     const [procedures, setProcedures] = useState([]);
@@ -17,23 +17,23 @@ function AdmProcedures() {
             navigate('/');
         }
         reloadProcedures();
-    },[]);
+    }, []);
 
 
     const reloadProcedures = () => {
-        PublicService.getProcedures().then(result => {
-            if(result.data.status === 200){
-                setProcedures(result.data.result);
+        ClientReservationService.getProcedures().then(result => {
+            if (result.status === 200) {
+                setProcedures(result.data);
             }
         })
     }
 
     const deleteProcedure = (row) => {
-        if(window.confirm('Are you sure you wish to delete this procedure?')){
+        if (window.confirm('Are you sure you wish to delete this procedure?')) {
             ProcedureService.deleteProcedure(row.id).then(result => {
-                if (result.data.status === 200) {
+                if (result.status === 200) {
                     reloadProcedures();
-                }else{
+                } else {
                     setMessage(result.data.message);
                 }
             });
@@ -50,6 +50,7 @@ function AdmProcedures() {
                     <th scope="col">Procedure name</th>
                     <th scope="col">Description</th>
                     <th scope="col">Price</th>
+                    <th scope="col">Active</th>
                     <th scope="col">Edit</th>
                     <th scope="col">Delete</th>
                 </tr>
@@ -60,8 +61,13 @@ function AdmProcedures() {
                         <th scope="row" className="text-capitalize">{row.name}</th>
                         <td>{row.description}</td>
                         <td>{row.price}</td>
-                        <td><Link to='/create_update_procedure' state={{name: row.name, description: row.description, price: row.price, id:row.id}} className="btn btn-primary">Edit</Link></td>
-                        <td><button className="btn btn-danger" onClick={() => deleteProcedure(row)}>Delete</button ></td>
+                        <td>{row.checked === true ? "Yes" : "No"}</td>
+                        <td><Link to='/create_update_procedure'
+                                  state={{name: row.name, description: row.description, price: row.price, id: row.id, checked: row.checked}}
+                                  className="btn btn-primary">Edit</Link></td>
+                        <td>
+                            <button className="btn btn-danger" onClick={() => deleteProcedure(row)}>Delete</button>
+                        </td>
                     </tr>)
                     : <></>
                 }
@@ -72,4 +78,4 @@ function AdmProcedures() {
     );
 }
 
-export default AdmProcedures;
+export default SummaryProceduresPage;

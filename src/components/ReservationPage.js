@@ -1,12 +1,12 @@
 import './style.css'
 import {useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom';
-import ProcedureList from "./ProcedureList";
-import PublicService from "../service/PublicService";
+import ProceduresList from "./ProceduresList";
+import ClientReservationService from "../service/ClientReservationService";
 import CalendarComponent from "./Calendar";
 import {format} from "date-fns";
 
-function Reservation() {
+function ReservationPage() {
     const [email, setEmail] = useState("");
     const [procedures, setProcedures] = useState([]);
     const [messageTxt, setMessage] = useState("");
@@ -15,12 +15,14 @@ function Reservation() {
     const [date, setDate] = useState(null);
     const navigate = useNavigate();
 
-    const Reservation = (email, timeSlotDto, date, procedureDto, salonId) => { return { email:email, timeSlotDto:timeSlotDto, date:date, procedureDto:procedureDto, salonId:salonId} }
+    const Reservation = (email, timeSlotDto, date, procedureDto, timestamp) => {
+        return {email: email, procedure: procedureDto, reservationDate: date, time: timeSlotDto, createdDate: timestamp}
+    }
 
     useEffect(() => {
-        PublicService.getProcedures().then(result => {
-            if (result.data.status === 200) {
-                setProcedures(result.data.result);
+        ClientReservationService.getActiveProcedures().then(result => {
+            if (result.status === 200) {
+                setProcedures(result.data);
             }
         })
     }, []);
@@ -38,7 +40,7 @@ function Reservation() {
 
         if (email === "") {
             formIsValid = false;
-            errorMsg = errorMsg+ "Email cannot be empty ";
+            errorMsg = errorMsg + "Email cannot be empty ";
         }
 
         let lastAtPos = email.lastIndexOf("@");
@@ -46,34 +48,33 @@ function Reservation() {
 
         if (!(lastAtPos < lastDotPos && lastAtPos > 0 && email.indexOf("@@") == -1 && lastDotPos > 2 && email.length - lastDotPos > 2)) {
             formIsValid = false;
-            errorMsg = errorMsg+ "Email is not valid ";
+            errorMsg = errorMsg + "Email is not valid ";
         }
 
         if (procedure === null) {
             formIsValid = false;
-            errorMsg = errorMsg +"You must pick some procedure ";
+            errorMsg = errorMsg + "You must pick some procedure ";
         }
         if (date === null) {
             formIsValid = false;
-            errorMsg = errorMsg +"You must pick some date ";
+            errorMsg = errorMsg + "You must pick some date ";
         }
         if (timeSlot === null) {
             formIsValid = false;
-            errorMsg = errorMsg+ "You must pick some time ";
+            errorMsg = errorMsg + "You must pick some time ";
         }
 
-        if(formIsValid){
-            const reservation = Reservation(email, timeSlot, format(date, "yyyy-MM-dd"), procedure, 1);
-            PublicService.createReservation(reservation).then(result => {
-                if (result.data.status === 200) {
+        if (formIsValid) {
+            const reservation = Reservation(email, timeSlot, format(date, "yyyy-MM-dd"), procedure, new Date().getTime());
+            ClientReservationService.createReservation(reservation).then(result => {
+                if (result.status === 200) {
                     navigate("/");
-                }else{
-                    setMessage( messageTxt + result.data.message)
-
+                } else {
+                    alert(result.response.data);
                 }
             })
             setMessage("");
-        }else{
+        } else {
             setMessage(errorMsg)
             alert("Form has errors.");
         }
@@ -101,9 +102,9 @@ function Reservation() {
                     <h3>Select Procedure</h3>
                     <div className="card-body" id="procedures">
                         {procedures.length
-                            ? procedures.map(row => <ProcedureList clickable={true} key={row.name} row={row}
-                                                                   setProcedure={setProcedure}/>)
-                            : <h3>We currently do not offer any cosmetic treatments.</h3>
+                            ? procedures.map(row => <ProceduresList clickable={true} key={row.name} row={row}
+                                                                    setProcedure={setProcedure}/>)
+                            : <h3>We currently do not offer any procedures.</h3>
                         }
                     </div>
                 </div>
@@ -117,4 +118,4 @@ function Reservation() {
     )
 }
 
-export default Reservation;
+export default ReservationPage;

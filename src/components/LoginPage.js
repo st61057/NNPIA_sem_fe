@@ -1,57 +1,67 @@
-import React, {useState} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
-import AuthService from '../service/AuthService';
+import './style.css'
+import {useEffect, useState} from "react";
+import AuthService from "../service/AuthService";
+import {useNavigate} from 'react-router-dom';
 
-function LoginPage() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+function Login(props) {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [messageTxt, setMessage] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        setLoading(true);
-        try {
-            await AuthService.login(username, password);
-            setLoading(false);
-            navigate.push('/App')
-        } catch (error) {
-            setErrorMessage('Failed to login');
-            setLoading(false);
-        }
+    useEffect(() => {
+        localStorage.clear();
+    }, []);
+
+
+    const login = (e) => {
+        e.preventDefault();
+
+        const credentials = {username, password};
+        AuthService.login(credentials).then(res => {
+            if (res.status === 200) {
+                localStorage.setItem("userInfo", JSON.stringify(res.data));
+                props.setLoggedIn(true);
+                // navigate('/administration');
+            } else {
+                setMessage(res.data.message);
+            }
+        });
     };
 
+    const handleChangeUser = (e) => {
+        setUsername(e.target.value);
+    }
+
+    const handleChangePass = (e) => {
+        setPassword(e.target.value);
+    }
+
+
     return (
-        <div>
-            <Link to="/">Hlavní stránka</Link>
-            <h1>Přihlášení</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Uživatelské jméno:
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </label>
-                <br/>
-                <label>
-                    Heslo:
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </label>
-                <br/>
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Loading...' : 'Login'}
-                </button>
-                {errorMessage && <p>{errorMessage}</p>}
+        <div className="container w-50 mx-auto mt-4">
+            <h3>Login</h3>
+            <hr/>
+            <form>
+                <h2 className="text-danger">{messageTxt}</h2>
+                <div className="form-group row m-3">
+                    <label className="col-sm-3 col-form-label">Username</label>
+                    <div className="col-sm-7">
+                        <input type="text" className="form-control" placeholder="Enter username" name="username"
+                               value={username} onChange={handleChangeUser} required={true}/>
+                    </div>
+                </div>
+                <div className="form-group row m-3">
+                    <label className="col-sm-3 col-form-label">Password</label>
+                    <div className="col-sm-7">
+                        <input type="password" className="form-control" placeholder="Password" name="password"
+                               value={password} onChange={handleChangePass} required={true}/>
+                    </div>
+                </div>
+                <button type="submit" className="btn btn-primary w-25" onClick={login}>Login</button>
             </form>
         </div>
-    );
+    )
 }
 
-export default LoginPage;
+export default Login;
