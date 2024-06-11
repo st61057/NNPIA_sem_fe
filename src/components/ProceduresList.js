@@ -1,7 +1,7 @@
 import './style.css'
 
-function ProcedureList({clickable, row, setProcedure}){
-    return(
+function ProcedureList({clickable, row, setProcedure}) {
+    return (
         <div className="card">
             <div className="card-header">
                 <h4 className="text-capitalize">{row.name}</h4>
@@ -23,4 +23,5 @@ function ProcedureList({clickable, row, setProcedure}){
         </div>
     )
 }
+
 export default ProcedureList;
