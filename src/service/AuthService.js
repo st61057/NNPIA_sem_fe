@@ -1,27 +1,30 @@
 import axios from 'axios';
 
-const BASE_URL = process.env.REACT_APP_TARGET_DOMAIN +'/api/auth';
+const BASE_URL = process.env.REACT_APP_TARGET_DOMAIN + '/auth/';
 
-const login = async (username, password) => {
-    try {
-        const response = await axios.post(BASE_URL + 'login', {
-            username,
-            password
-        });
-        if (response.data.accessToken) {
-            localStorage.setItem('user', JSON.stringify(response.data));
-        }
-        return response.data;
-    } catch (error) {
-        throw error;
+class AuthService {
+
+    registration(user) {
+        return axios.post(BASE_URL + "register", user);
     }
-};
 
-const logout = () => {
-    localStorage.removeItem('user');
-};
+    login(username, password) {
+        return axios.post(BASE_URL + "login", username, password);
+    };
 
-export default {
-    login,
-    logout
-};
+    logout() {
+        localStorage.removeItem('userInfo');
+        return axios.post(BASE_URL + 'logout', {}, null);
+    };
+
+    getUserInfo() {
+        return JSON.parse(localStorage.getItem("userInfo"));
+    }
+
+    getAuthHeader() {
+        return {headers: {Authorization: 'Bearer ' + this.getUserInfo().token}};
+    }
+
+}
+
+export default new AuthService();
