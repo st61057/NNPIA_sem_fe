@@ -1,6 +1,6 @@
 import './style.css';
 import AuthService from "../service/AuthService";
-import Pagination from "react-js-pagination";
+import Pagination from './Pagination';
 import {useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom';
 import ReservationService from "../service/ReservationService";
@@ -10,7 +10,7 @@ import * as React from "react";
 
 
 function ManageReservationsPage() {
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState(0);
     const [sortType, setSortType] = useState("asc");
     const [date, setDate] = useState(new Date());
@@ -36,7 +36,7 @@ function ManageReservationsPage() {
             .then((res) => {
                 if (res.status === 200) {
                     setReservations(res.data);
-                    setMaxPage(res.data.numberOfReservations);
+                    setMaxPage(Math.ceil(res.data.numberOfReservations / pageSize));
                 } else {
                     setReservations([]);
                     setMaxPage(0);
@@ -55,7 +55,7 @@ function ManageReservationsPage() {
     }
 
     const handlePageChange = (pageNumber) => {
-        setPage(pageNumber - 1);
+        setPage(pageNumber);
     }
     const onChangeDate = (date) => {
         setDate(new Date(date.target.value));
@@ -83,8 +83,6 @@ function ManageReservationsPage() {
                 if ((maxPage - 1) % pageSize === 0 && page !== 0) {
                     setPage(page - 1);
                 }
-            } else {
-                alert(result.message);
             }
         });
     }
@@ -141,11 +139,9 @@ function ManageReservationsPage() {
                 }</div>
             {reservations.numberOfReservations > 0 ?
                 <Pagination
-                    activePage={page + 1}
-                    itemsCountPerPage={pageSize}
-                    totalItemsCount={maxPage}
-                    pageRangeDisplayed={5}
-                    onChange={handlePageChange}
+                    currentPage={page}
+                    totalPages={maxPage}
+                    onPageChange={handlePageChange}
                 />
                 :
                 <></>
