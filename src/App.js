@@ -23,8 +23,8 @@ function App() {
                 <Header/>
                 <Routes>
                     <Route path="/" element={<Main/>}/>
-                    <Route path="/login" element={<LoginPage/>}/>
-                    <Route path="/logout" element={<LogoutPage/>}/>
+                    <Route path="/login" element={<LoginPage {...{setLoggedIn}}/>}/>
+                    <Route path="/logout" element={<LogoutPage {...{setLoggedIn}}/>}/>
                     <Route path="/summary_procedures" element={<SummaryProceduresPage/>}/>
                     <Route path="/manage_reservation" element={<ManageReservationsPage/>}/>
                     <Route path="/reservation" element={<ReservationPage/>}/>
