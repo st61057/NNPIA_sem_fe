@@ -1,10 +1,8 @@
 import {useEffect, useState} from 'react';
 import Calendar from 'react-calendar';
-// import 'react-calendar/dist/Calendar.css';
 import ClientReservationService from "../service/ClientReservationService";
 import './style.css'
 import {format} from "date-fns";
-import ReservationPage from "./ReservationPage";
 
 function CalendarComponent(props) {
     const firstAvailableDay = new Date();
@@ -12,11 +10,8 @@ function CalendarComponent(props) {
     const maxMonth = new Date();
     maxMonth.setMonth(maxMonth.getMonth() + 4);
     const [date, setDate] = useState(firstAvailableDay);
-
     const [timeslots, setTimeslots] = useState([]);
     const [tripType, setTripType] = useState("");
-
-
     const Reservation = (email, timeSlotDto, date, procedureDto, timestamp) => {
         return {email: email, procedure: procedureDto, reservationDate: date, time: timeSlotDto, createdDate: timestamp}
     }
@@ -56,8 +51,6 @@ function CalendarComponent(props) {
             });
 
             setTripType(row.startTime);
-
-
         }
     };
 
@@ -70,20 +63,16 @@ function CalendarComponent(props) {
             </div>
             <div className='col-7'>
                 <div className="radio-btn-container row">
-                    {timeslots.length
-                        ? timeslots.map(row => (
+                    {timeslots.length ? timeslots.map(row => (
                             <div
-                                style={{backgroundColor: !row.slotFree ? "grey" : tripType == row.startTime ? "#0dcaf0" : "#0d6efd"}}
+                                style={{backgroundColor: !row.slotFree ? "grey" : tripType === row.startTime ? "red" : "white"}}
                                 key={row.startTime}
                                 className="radio-btn card text-white col-5 m-2 p-2"
                                 onClick={() => {
                                     clickHandler(row)
-                                }}
-                            >
+                                }}>
                                 {row.startTime} : {row.endTime}
-
-                            </div>
-                        ))
+                            </div>))
                         : <h3>We have no times available for this day.</h3>
                     }
                 </div>

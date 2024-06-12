@@ -8,7 +8,6 @@ import ProcedureService from "../service/ProcedureService";
 
 
 function SummaryProceduresPage() {
-    const [messageTxt, setMessage] = useState("");
     const navigate = useNavigate();
     const [procedures, setProcedures] = useState([]);
 
@@ -29,12 +28,12 @@ function SummaryProceduresPage() {
     }
 
     const deleteProcedure = (row) => {
-        if (window.confirm('Are you sure you wish to delete this procedure?')) {
+        if (window.confirm('Do you really want to delete this procedure?')) {
             ProcedureService.deleteProcedure(row.id).then(result => {
                 if (result.status === 200) {
                     reloadProcedures();
                 } else {
-                    setMessage(result.data.message);
+                    alert(result.message);
                 }
             });
         }
@@ -43,7 +42,6 @@ function SummaryProceduresPage() {
     return (
         <div className="cardWrap mx-auto w-75">
             <h1 className="h1 mt-5">Procedures</h1>
-            <h5 className="text-danger">{messageTxt}</h5>
             <table className="table">
                 <thead>
                 <tr>
@@ -63,7 +61,13 @@ function SummaryProceduresPage() {
                         <td>{row.price}</td>
                         <td>{row.checked === true ? "Yes" : "No"}</td>
                         <td><Link to='/create_update_procedure'
-                                  state={{name: row.name, description: row.description, price: row.price, id: row.id, checked: row.checked}}
+                                  state={{
+                                      name: row.name,
+                                      description: row.description,
+                                      price: row.price,
+                                      id: row.id,
+                                      checked: row.checked
+                                  }}
                                   className="btn btn-primary">Edit</Link></td>
                         <td>
                             <button className="btn btn-danger" onClick={() => deleteProcedure(row)}>Delete</button>

@@ -13,7 +13,6 @@ function ManageReservationsPage() {
     const [page, setPage] = useState(0);
     const [maxPage, setMaxPage] = useState(0);
     const [sortType, setSortType] = useState("asc");
-    const [messageTxt, setMessage] = useState("");
     const [date, setDate] = useState(new Date());
     const [status, setStatus] = useState("ALL");
     const [reservations, setReservations] = useState([]);
@@ -22,7 +21,7 @@ function ManageReservationsPage() {
     const sortBy = "startTime";
 
     let timeOption = ["asc", "desc"];
-    let statusOption = ["ALL","CREATED", "CONFIRMED", "DONE", "CANCELED", "LOCKED"];
+    let statusOption = ["ALL", "CREATED", "CONFIRMED", "DONE", "CANCELED", "LOCKED"];
 
     useEffect(() => {
         if (AuthService.getUserInfo().username === null) {
@@ -33,7 +32,7 @@ function ManageReservationsPage() {
 
 
     const reloadCartList = (sort) => {
-        ReservationService.getReservation(date, status, page, pageSize, sort/*, AuthService.getUserInfo().id*/)
+        ReservationService.getReservation(date, status, page, pageSize, sort, AuthService.getUserInfo())
             .then((res) => {
                 if (res.status === 200) {
                     setReservations(res.data);
@@ -85,14 +84,13 @@ function ManageReservationsPage() {
                     setPage(page - 1);
                 }
             } else {
-                setMessage(result.data.message);
+                alert(result.message);
             }
         });
     }
 
     return (
         <div className="cardWrap mx-auto w-75">
-            <h5 className="text-danger">{messageTxt}</h5>
             <div>
                 <SorterBar sortType={sortType} onChangeType={onChangeValueType} order={"Order by time:"}
                            data={timeOption}/>

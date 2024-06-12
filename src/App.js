@@ -3,7 +3,6 @@ import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import Header from "./components/Header";
 import Main from "./components/Main";
 import LoginPage from "./components/LoginPage";
-import EditUser from "./components/EditUser";
 import {useState} from "react";
 import AuthService from "./service/AuthService";
 import Navbar from "./components/Navbar";
@@ -12,7 +11,7 @@ import ReservationPage from "./components/ReservationPage";
 import ManageProcedurePage from "./components/ManageProcedurePage";
 import SummaryProceduresPage from "./components/SummaryProceduresPage";
 import ManageReservationsPage from "./components/ManageReservationsPage";
-import RegistrationPage from "./components/RegistrationPage";
+import AddingUserPage from "./components/AddingUserPage";
 
 function App() {
     const [loggedIn, setLoggedIn] = useState(AuthService.getUserInfo() !== null);
@@ -23,17 +22,14 @@ function App() {
                 <Navbar {...{loggedIn}}/>
                 <Header/>
                 <Routes>
-                    <Route path="/login" element={<LoginPage {...{setLoggedIn}}/>} />
-                    <Route path="/logout" element={<LogoutPage {...{setLoggedIn}}/>}/>
-                    <Route path="/adm_procedures" element={<SummaryProceduresPage />}/>
-                    <Route path="/adm_reservation" element={<ManageReservationsPage />}/>
-                    <Route path="/edituser" element={<EditUser/>}/>
                     <Route path="/" element={<Main/>}/>
-                    <Route exact path="/" element={<Main/>}/>
-                    <Route exact path="/reservation" element={<ReservationPage/>}/>
-                    <Route path="/edit" element={<EditUser/>}/>
-                    <Route path="/create_update_procedure" element={<ManageProcedurePage />}/>
-                    <Route path="/registration" element={<RegistrationPage />}/>
+                    <Route path="/login" element={<LoginPage/>}/>
+                    <Route path="/logout" element={<LogoutPage/>}/>
+                    <Route path="/summary_procedures" element={<SummaryProceduresPage/>}/>
+                    <Route path="/manage_reservation" element={<ManageReservationsPage/>}/>
+                    <Route path="/reservation" element={<ReservationPage/>}/>
+                    <Route path="/create_update_procedure" element={<ManageProcedurePage/>}/>
+                    <Route path="/adduser" element={<AddingUserPage/>}/>
 
                 </Routes>
             </Router>
