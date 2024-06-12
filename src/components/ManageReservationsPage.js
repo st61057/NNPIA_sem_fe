@@ -75,11 +75,18 @@ function ManageReservationsPage() {
             }
         });
     }
+    const remove = (id) => {
+        ReservationService.deleteReservation(id).then(result => {
+            if (result.status === 200) {
+                reloadCartList(sortBy + ',' + sortType)
+            }
+        })
+    }
+
     const cancel = (id) => {
         ReservationService.cancelReservation(id).then(result => {
             if (result.status === 200) {
                 reloadCartList(sortBy + ',' + sortType);
-                console.log(maxPage + " " + pageSize + " " + page);
                 if ((maxPage - 1) % pageSize === 0 && page !== 0) {
                     setPage(page - 1);
                 }
@@ -132,6 +139,10 @@ function ManageReservationsPage() {
                                         </div>
                                         : <p></p>
                                 }
+                                {<button className="btn btn-outline-primary"
+                                         onClick={() => remove(row.id)}>
+                                    Delete
+                                </button>}
                             </div>
                         </div>
                     ))

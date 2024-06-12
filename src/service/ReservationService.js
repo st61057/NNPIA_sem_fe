@@ -23,6 +23,10 @@ class ReservationService {
         return axios.put(BASE_URL + 'cancel/' + reservationId, AuthService.getAuthHeader());
     }
 
+    deleteReservation(reservationId) {
+        return axios.delete(BASE_URL + 'delete/' + reservationId, AuthService.getAuthHeader())
+    }
+
 }
 
 export default new ReservationService();
