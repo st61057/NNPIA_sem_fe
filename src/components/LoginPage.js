@@ -3,10 +3,9 @@ import {useEffect, useState} from "react";
 import AuthService from "../service/AuthService";
 import {useNavigate} from 'react-router-dom';
 
-function Login(props) {
+function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [messageTxt, setMessage] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -21,10 +20,9 @@ function Login(props) {
         AuthService.login(credentials).then(res => {
             if (res.status === 200) {
                 localStorage.setItem("userInfo", JSON.stringify(res.data));
-                props.setLoggedIn(true);
-                // navigate('/administration');
+                navigate('/');
             } else {
-                setMessage(res.data.message);
+                alert(res.message);
             }
         });
     };
@@ -43,7 +41,6 @@ function Login(props) {
             <h3>Login</h3>
             <hr/>
             <form>
-                <h2 className="text-danger">{messageTxt}</h2>
                 <div className="form-group row m-3">
                     <label className="col-sm-3 col-form-label">Username</label>
                     <div className="col-sm-7">

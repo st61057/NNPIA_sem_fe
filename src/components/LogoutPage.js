@@ -8,6 +8,7 @@ function LogoutPage(props){
     useEffect(() => {
         AuthService.logout().then(res =>{
             if(res.status === 200){
+                localStorage.removeItem('userInfo');
                 props.setLoggedIn(false);
                 navigate('/');
             }else{

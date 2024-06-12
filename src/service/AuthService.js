@@ -4,8 +4,8 @@ const BASE_URL = process.env.REACT_APP_TARGET_DOMAIN + '/auth/';
 
 class AuthService {
 
-    registration(user) {
-        return axios.post(BASE_URL + "register", user);
+    addUser(user) {
+        return axios.post(BASE_URL + "add", user);
     }
 
     login(username, password) {
@@ -13,7 +13,6 @@ class AuthService {
     };
 
     logout() {
-        localStorage.removeItem('userInfo');
         return axios.post(BASE_URL + 'logout', {}, null);
     };
 
