@@ -9,11 +9,11 @@ import {format} from "date-fns";
 function ReservationPage() {
     const [email, setEmail] = useState("");
     const [procedures, setProcedures] = useState([]);
-    const [messageTxt, setMessage] = useState("");
     const [procedure, setProcedure] = useState(null);
     const [timeSlot, setTimeslot] = useState(null);
     const [date, setDate] = useState(null);
     const navigate = useNavigate();
+    let formIsValid = true;
 
     const Reservation = (email, timeSlotDto, date, procedureDto, timestamp) => {
         return {email: email, procedure: procedureDto, reservationDate: date, time: timeSlotDto, createdDate: timestamp}
@@ -27,41 +27,50 @@ function ReservationPage() {
         })
     }, []);
 
+    function validateEmail(email) {
+        const lastAtPos = email.lastIndexOf("@");
+        const lastDotPos = email.lastIndexOf(".");
+
+        const isValid = lastAtPos < lastDotPos &&
+            lastAtPos > 0 &&
+            email.indexOf("@@") === -1 &&
+            lastDotPos > 2 &&
+            email.length - lastDotPos > 2;
+
+        return isValid;
+    }
+
 
     const createReservation = (e) => {
         e.preventDefault();
         handleValidation(e);
-
     };
 
+    const showAlert = (message) => {
+        formIsValid = false;
+        alert(message);
+    }
+
+    const handleChangeEmail = (e) => {
+        setEmail(e.target.value);
+    }
+
     const handleValidation = (e) => {
-        let formIsValid = true;
-        let errorMsg = "";
 
         if (email === "") {
-            formIsValid = false;
-            errorMsg = errorMsg + "Email cannot be empty ";
-        }
-
-        let lastAtPos = email.lastIndexOf("@");
-        let lastDotPos = email.lastIndexOf(".");
-
-        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && email.indexOf("@@") == -1 && lastDotPos > 2 && email.length - lastDotPos > 2)) {
-            formIsValid = false;
-            errorMsg = errorMsg + "Email is not valid ";
+            showAlert("Email cannot be empty");
+        }else if (!validateEmail(email)) {
+            showAlert("Email is not valid");
         }
 
         if (procedure === null) {
-            formIsValid = false;
-            errorMsg = errorMsg + "You must pick some procedure ";
+            showAlert("You must pick some procedure");
         }
         if (date === null) {
-            formIsValid = false;
-            errorMsg = errorMsg + "You must pick some date ";
+            showAlert("You must pick some date");
         }
         if (timeSlot === null) {
-            formIsValid = false;
-            errorMsg = errorMsg + "You must pick some time ";
+            showAlert("You must pick some time");
         }
 
         if (formIsValid) {
@@ -73,15 +82,7 @@ function ReservationPage() {
                     alert(result.response.data);
                 }
             })
-            setMessage("");
-        } else {
-            setMessage(errorMsg)
-            alert("Form has errors.");
         }
-    }
-
-    const handleChangeEmail = (e) => {
-        setEmail(e.target.value);
     }
 
     return (
@@ -97,19 +98,17 @@ function ReservationPage() {
                     </div>
                 </div>
 
-
                 <div className="card mt-5">
                     <h3>Select Procedure</h3>
                     <div className="card-body" id="procedures">
                         {procedures.length
                             ? procedures.map(row => <ProceduresList clickable={true} key={row.name} row={row}
                                                                     setProcedure={setProcedure}/>)
-                            : <h3>We currently do not offer any procedures.</h3>
+                            : <h3>Currently there are not available any procedures.</h3>
                         }
                     </div>
                 </div>
                 <CalendarComponent setTimeSlot={setTimeslot} setDateForReservation={setDate}/>
-                <h3 className="text-danger">{messageTxt}</h3>
                 <button type="submit" className="btn btn-primary w-50 m-3" onClick={createReservation}>Create
                     Reservation
                 </button>
