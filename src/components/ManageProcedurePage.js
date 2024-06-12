@@ -47,9 +47,9 @@ function ManageProcedurePage(props) {
         ProcedureService.updateProcedure(procedure).then(res => {
             if (res.status === 200) {
                 navigate('/summary_procedures');
-            } else {
-                alert(res.message);
             }
+        }).catch(error => {
+            alert(error.response.data);
         });
     };
 
@@ -64,9 +64,9 @@ function ManageProcedurePage(props) {
         ProcedureService.createProcedure(procedure).then(res => {
             if (res.status === 200) {
                 navigate('/summary_procedures');
-            } else {
-                alert(res.message);
             }
+        }).catch(error => {
+            alert(error.response.data);
         });
     };
 

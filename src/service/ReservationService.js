@@ -16,7 +16,7 @@ class ReservationService {
     }
 
     confirmReservation(id) {
-        return axios.put(BASE_URL + 'confirm/' + {reservationId: id}, AuthService.getAuthHeader());
+        return axios.put(BASE_URL + 'confirm/' + id, AuthService.getAuthHeader());
     }
 
     cancelReservation(reservationId) {

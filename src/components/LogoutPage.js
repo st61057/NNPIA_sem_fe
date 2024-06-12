@@ -11,9 +11,9 @@ function LogoutPage(props){
                 localStorage.removeItem('userInfo');
                 props.setLoggedIn(false);
                 navigate('/');
-            }else{
-                alert(res.message);
             }
+        }).catch(error => {
+            alert(error.response.data);
         });
     },[]);
 

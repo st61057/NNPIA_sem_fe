@@ -17,9 +17,9 @@ function AddingUserPage() {
         AuthService.addUser(createdUser).then(res => {
             if (res.status === 200) {
                 navigate('/');
-            } else {
-                alert(res.message);
             }
+        }).catch(error => {
+            alert(error.response.data);
         });
     };
 

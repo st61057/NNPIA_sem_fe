@@ -32,10 +32,9 @@ function SummaryProceduresPage() {
             ProcedureService.deleteProcedure(row.id).then(result => {
                 if (result.status === 200) {
                     reloadProcedures();
-                } else {
-                    alert(result.message);
                 }
-            });
+            }).catch(error =>
+                alert(error.message));
         }
     }
 

@@ -21,9 +21,9 @@ function Login() {
             if (res.status === 200) {
                 localStorage.setItem("userInfo", JSON.stringify(res.data));
                 navigate('/');
-            } else {
-                alert(res.message);
             }
+        }).catch(error => {
+            alert(error.response.data);
         });
     };
 
